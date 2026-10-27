@@ -5,65 +5,199 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAG ML Docs — Ask scikit-learn &amp; PyTorch docs</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto;
-         padding: 0 1rem; color: #1a1a1a; background: #fafafa; }
-  h1 { font-size: 1.6rem; }
-  .sub { color: #555; margin-bottom: 1.5rem; }
-  #chat { border: 1px solid #ddd; border-radius: 8px; background: #fff;
-          padding: 1rem; min-height: 200px; }
-  .q { font-weight: 600; margin-top: 1rem; }
-  .meta { color: #666; font-size: 0.85rem; }
-  .cite { border-left: 3px solid #2a7ae2; padding-left: 0.75rem; margin: 0.75rem 0; }
-  .cite a { color: #2a7ae2; text-decoration: none; }
-  .cite p { white-space: pre-wrap; margin: 0.25rem 0; }
+  :root {
+    --ink: #17171c;
+    --muted: #6b6b76;
+    --faint: #9a9aa6;
+    --line: #e7e7ec;
+    --bg: #f6f6f4;
+    --card: #ffffff;
+    --accent: #4f46e5;
+    --accent-soft: #eef0ff;
+    --green: #15803d;
+    --green-soft: #eaf7ee;
+    --amber: #b45309;
+    --amber-soft: #fdf3e3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: ui-sans-system, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); background: var(--bg);
+    margin: 0; padding: 0 1rem 3rem;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  header { padding: 2.5rem 0 1.25rem; }
+  .eyebrow {
+    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;
+  }
+  h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); font-size: 1rem; line-height: 1.6; margin: 0 0 1rem; max-width: 680px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+  .pill {
+    font-size: 0.8rem; color: #3f3f4a; background: #fff; border: 1px solid var(--line);
+    border-radius: 999px; padding: 0.3rem 0.7rem;
+  }
+  .pill-arrow { color: var(--faint); font-size: 0.8rem; }
+
+  .examples { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.25rem; }
+  .examples span { font-size: 0.82rem; color: var(--muted); align-self: center; }
+  .chip {
+    font-size: 0.85rem; background: var(--accent-soft); color: var(--accent);
+    border: 1px solid transparent; border-radius: 999px; padding: 0.4rem 0.85rem;
+    cursor: pointer; font-family: inherit;
+  }
+  .chip:hover { border-color: var(--accent); }
+
+  #chat {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.25rem 1.5rem; min-height: 220px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  #chat:empty::before {
+    content: "Ask something — answers come back as passages quoted from the official docs, with the source attached. Nothing is invented.";
+    color: var(--faint); font-size: 0.95rem; line-height: 1.6;
+  }
+  .q {
+    font-weight: 700; font-size: 1.02rem; margin: 1.5rem 0 0.6rem;
+    padding-top: 1.5rem; border-top: 1px solid var(--line);
+  }
+  .q:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .badge {
+    font-size: 0.78rem; border-radius: 999px; padding: 0.25rem 0.65rem;
+    background: #f1f1f4; color: #3f3f4a;
+  }
+  .badge.ok { background: var(--green-soft); color: var(--green); font-weight: 600; }
+  .badge.warn { background: var(--amber-soft); color: var(--amber); font-weight: 600; }
+  .badge.decomp { background: var(--accent-soft); color: var(--accent); }
+  .searching { color: var(--muted); font-size: 0.9rem; padding: 0.4rem 0; }
+  .dots::after { content: ""; animation: dots 1.2s steps(1) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  .cite {
+    border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0; padding: 0.9rem 1rem; margin: 0.75rem 0;
+    background: #fcfcff;
+  }
+  .cite-head { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+  .rank {
+    display: inline-block; font-size: 0.75rem; font-weight: 700; color: #fff;
+    background: var(--accent); border-radius: 6px; padding: 0.15rem 0.45rem;
+  }
+  .cite a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .cite a:hover { text-decoration: underline; }
+  .cite .section { color: var(--muted); font-size: 0.9rem; }
+  .cite .score {
+    margin-left: auto; font-size: 0.78rem; color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .cite p { white-space: pre-wrap; margin: 0.6rem 0 0; line-height: 1.65; font-size: 0.95rem; color: #2b2b33; }
+  .gen-text { line-height: 1.65; font-size: 0.95rem; }
+  .none { color: var(--muted); }
+
   form { display: flex; gap: 0.5rem; margin-top: 1rem; }
-  input[type=text] { flex: 1; padding: 0.6rem; font-size: 1rem; }
-  button { padding: 0.6rem 1rem; font-size: 1rem; cursor: pointer; }
-  details { margin-top: 0.5rem; font-size: 0.85rem; color: #444; }
-  code { background: #f0f0f0; padding: 0 0.2rem; }
+  input[type=text] {
+    flex: 1; padding: 0.8rem 1rem; font-size: 1rem; font-family: inherit;
+    border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink);
+  }
+  input[type=text]:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  button {
+    font-family: inherit; font-size: 1rem; cursor: pointer; border-radius: 12px;
+    padding: 0.8rem 1.25rem; border: none;
+  }
+  button[type=submit] { background: var(--accent); color: #fff; font-weight: 600; }
+  button[type=submit]:hover { filter: brightness(1.08); }
+  #reset { background: #fff; border: 1px solid var(--line); color: var(--muted); }
+  #reset:hover { color: var(--ink); }
+  .gen-row { margin-top: 0.75rem; font-size: 0.85rem; color: var(--muted); }
+  .gen-row input { accent-color: var(--accent); }
+  details { margin-top: 0.75rem; font-size: 0.82rem; color: var(--muted); }
+  details pre { white-space: pre-wrap; background: #f1f1f4; border-radius: 8px; padding: 0.75rem; }
 </style>
 </head>
 <body>
-<h1>RAG ML Docs</h1>
-<p class="sub">Ask questions grounded in the official scikit-learn and PyTorch
-documentation. Answers are extractive passages with doc + section citations —
-nothing is invented. Pipeline: query decomposition → hybrid BM25 + dense
-retrieval → cross-encoder reranking → cited answer.</p>
-<div id="chat"></div>
-<form id="ask-form">
-  <input type="text" id="q" placeholder="e.g. How do I build a Pipeline with a scaler and a classifier?" autocomplete="off">
-  <button type="submit">Ask</button>
-  <button type="button" id="reset">Reset chat</button>
-</form>
-<label><input type="checkbox" id="gen"> Try generative mode (flan-t5-small, quality-gated)</label>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">scikit-learn · PyTorch — official docs only</div>
+    <h1>RAG ML Docs</h1>
+    <p class="sub">Ask questions grounded in the official documentation. Answers are
+    extractive passages with doc + section citations — nothing is invented.</p>
+    <div class="pills">
+      <span class="pill">Query decomposition</span><span class="pill-arrow">→</span>
+      <span class="pill">Hybrid BM25 + dense retrieval</span><span class="pill-arrow">→</span>
+      <span class="pill">Cross-encoder reranking</span><span class="pill-arrow">→</span>
+      <span class="pill">Cited answer</span>
+    </div>
+  </header>
+
+  <div class="examples">
+    <span>Try:</span>
+    <button type="button" class="chip" data-q="How do I scale features with StandardScaler?">StandardScaler</button>
+    <button type="button" class="chip" data-q="How do I build a Pipeline with a scaler and a classifier?">Pipeline</button>
+    <button type="button" class="chip" data-q="How do I use the Adam optimizer?">Adam optimizer</button>
+    <button type="button" class="chip" data-q="How do I load data with a DataLoader?">DataLoader</button>
+  </div>
+
+  <div id="chat"></div>
+
+  <form id="ask-form">
+    <input type="text" id="q" placeholder="e.g. How do I build a Pipeline with a scaler and a classifier?" autocomplete="off">
+    <button type="submit">Ask</button>
+    <button type="button" id="reset">Reset</button>
+  </form>
+  <div class="gen-row">
+    <label><input type="checkbox" id="gen"> Try generative mode (flan-t5-small, quality-gated — experimental, extractive is the default)</label>
+  </div>
+</div>
+
 <script>
 const chat = document.getElementById('chat');
 const form = document.getElementById('ask-form');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const input = document.getElementById('q');
-  const question = input.value.trim();
+const input = document.getElementById('q');
+
+async function ask(question) {
+  question = (question || '').trim();
   if (!question) return;
-  input.value = '';
-  chat.insertAdjacentHTML('beforeend', `<div class="q">You: ${escapeHtml(question)}</div><div class="meta">Searching…</div>`);
+  const searching = document.createElement('div');
+  searching.className = 'searching';
+  searching.innerHTML = 'Searching the docs<span class="dots"></span>';
+  chat.insertAdjacentHTML('beforeend', `<div class="q">You: ${escapeHtml(question)}</div>`);
+  chat.appendChild(searching);
+  chat.scrollTop = chat.scrollHeight;
   const res = await fetch('/ask', { method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ question, generative: document.getElementById('gen').checked }) });
   const data = await res.json();
-  document.querySelectorAll('.meta').forEach(el => { if (el.textContent === 'Searching…') el.remove(); });
-  let html = `<div class="meta">Mode: ${escapeHtml(data.mode)}`;
+  searching.remove();
+  let html = `<div class="meta-row"><span class="badge">Mode: ${escapeHtml(data.mode)}</span>`;
+  html += data.citations_verified
+    ? `<span class="badge ok">✓ Citations verified</span>`
+    : `<span class="badge warn">Citations not verified</span>`;
   if (data.sub_questions && data.sub_questions.length > 1)
-    html += ` · Decomposed: ${data.sub_questions.map(escapeHtml).join(' | ')}`;
-  if (data.used_history) html += ' · (used chat history)';
-  html += ` · Citations verified: ${data.citations_verified}</div>`;
-  if (data.generative_text) html += `<p>${escapeHtml(data.generative_text)}</p>`;
-  if (!data.citations.length) html += '<p>No relevant passages found.</p>';
+    for (const sq of data.sub_questions)
+      html += `<span class="badge decomp">${escapeHtml(sq)}</span>`;
+  if (data.used_history) html += `<span class="badge">(used chat history)</span>`;
+  html += `</div>`;
+  if (data.generative_text) html += `<p class="gen-text">${escapeHtml(data.generative_text)}</p>`;
+  if (!data.citations.length) html += '<p class="none">No relevant passages found.</p>';
   for (const c of data.citations) {
-    html += `<div class="cite"><a href="${c.url}" target="_blank">[${c.rank}] ${escapeHtml(c.title)} — ${escapeHtml(c.section)}</a> <span class="meta">(${escapeHtml(c.source)}, rerank ${c.rerank_score})</span><p>${escapeHtml(c.text)}</p></div>`;
+    html += `<div class="cite"><div class="cite-head"><span class="rank">${c.rank}</span><a href="${c.url}" target="_blank">${escapeHtml(c.title)}</a><span class="section">— ${escapeHtml(c.section)}</span><span class="score">${escapeHtml(c.source)} · rerank ${c.rerank_score}</span></div><p>${escapeHtml(c.text)}</p></div>`;
   }
   if (data.debug) html += `<details><summary>Retrieval debug</summary><pre>${escapeHtml(JSON.stringify(data.debug, null, 1))}</pre></details>`;
   chat.insertAdjacentHTML('beforeend', html);
   chat.scrollTop = chat.scrollHeight;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const question = input.value;
+  input.value = '';
+  await ask(question);
+});
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => ask(chip.dataset.q));
 });
 document.getElementById('reset').addEventListener('click', async () => {
   await fetch('/reset', { method: 'POST' });
