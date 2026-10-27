@@ -6,8 +6,7 @@ those pages. This is a different genre from the companion project
 `rag-paper-explorer` (which answers over research papers): here every answer
 traces to an official docs page, with the doc title, section, and URL cited.
 
-**Everything runs locally on CPU. No API keys, no paid services, no public
-deployment.**
+**Live demo: https://rag-ml-docs.onrender.com** (free tier — spins down when idle, first load takes ~a minute). No API keys, no paid services.
 
 ## Architecture
 
