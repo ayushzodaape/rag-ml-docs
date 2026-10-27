@@ -1,0 +1,221 @@
+{
+ "summary": {
+  "n_questions": 10,
+  "hit@5": 0.9,
+  "hit@10": 1.0,
+  "top1": 0.8,
+  "citations_verified_all": true,
+  "decomposition_triggered_q10": true
+ },
+ "rows": [
+  {
+   "n": 1,
+   "question": "How do I scale features with StandardScaler before training a model?",
+   "expected": [
+    "sklearn-scaler"
+   ],
+   "top1_doc": "sklearn-scaler",
+   "top5_docs": [
+    "sklearn-scaler"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I scale features with StandardScaler before training a model"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 2,
+   "question": "How do I build a Pipeline that combines a scaler and a classifier?",
+   "expected": [
+    "sklearn-pipeline"
+   ],
+   "top1_doc": "sklearn-pipeline",
+   "top5_docs": [
+    "sklearn-pipeline"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I build a Pipeline that combines a scaler and a classifier"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 3,
+   "question": "How do I tune hyperparameters with GridSearchCV?",
+   "expected": [
+    "sklearn-gridsearch"
+   ],
+   "top1_doc": "sklearn-svc",
+   "top5_docs": [
+    "sklearn-gridsearch",
+    "sklearn-svc"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": false,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I tune hyperparameters with GridSearchCV"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 4,
+   "question": "How do I evaluate a classifier with a classification report, and what do precision and recall mean?",
+   "expected": [
+    "sklearn-classification-report"
+   ],
+   "top1_doc": "sklearn-classification-report",
+   "top5_docs": [
+    "sklearn-classification-report"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 2,
+   "sub_questions": [
+    "How do I evaluate a classifier with a classification report,",
+    "what do precision and recall mean"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 5,
+   "question": "How do I create a DataLoader for a custom Dataset in PyTorch?",
+   "expected": [
+    "torch-data"
+   ],
+   "top1_doc": "torch-data",
+   "top5_docs": [
+    "torch-data"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I create a DataLoader for a custom Dataset in PyTorch"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 6,
+   "question": "How do I define a custom neural network by subclassing nn.Module?",
+   "expected": [
+    "torch-module"
+   ],
+   "top1_doc": "torch-module",
+   "top5_docs": [
+    "torch-module"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I define a custom neural network by subclassing nn.Module"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 7,
+   "question": "How does autograd compute gradients, and what does calling backward() do?",
+   "expected": [
+    "torch-autograd"
+   ],
+   "top1_doc": "torch-autograd",
+   "top5_docs": [
+    "torch-autograd"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 2,
+   "sub_questions": [
+    "How does autograd compute gradients,",
+    "what does calling backward() do"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 8,
+   "question": "How do I use the Adam optimizer and set the learning rate?",
+   "expected": [
+    "torch-adam"
+   ],
+   "top1_doc": "torch-steplr",
+   "top5_docs": [
+    "torch-steplr"
+   ],
+   "hit@5": false,
+   "hit@10": true,
+   "top1": false,
+   "citations_verified": true,
+   "n_sub_questions": 2,
+   "sub_questions": [
+    "How do I use the Adam optimizer",
+    "set the learning rate"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 9,
+   "question": "How do I evaluate a model with cross_val_score?",
+   "expected": [
+    "sklearn-cross-val"
+   ],
+   "top1_doc": "sklearn-cross-val",
+   "top5_docs": [
+    "sklearn-cross-val",
+    "sklearn-gridsearch"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 1,
+   "sub_questions": [
+    "How do I evaluate a model with cross_val_score"
+   ],
+   "mode": "extractive"
+  },
+  {
+   "n": 10,
+   "question": "How do I scale features with StandardScaler and then train a LogisticRegression model in a Pipeline?",
+   "expected": [
+    "sklearn-logreg",
+    "sklearn-pipeline",
+    "sklearn-scaler"
+   ],
+   "top1_doc": "sklearn-scaler",
+   "top5_docs": [
+    "sklearn-pipeline",
+    "sklearn-scaler"
+   ],
+   "hit@5": true,
+   "hit@10": true,
+   "top1": true,
+   "citations_verified": true,
+   "n_sub_questions": 2,
+   "sub_questions": [
+    "How do I scale features with StandardScaler",
+    "train a LogisticRegression model in a Pipeline"
+   ],
+   "mode": "extractive"
+  }
+ ]
+}
