@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG ML Docs — Ask scikit-learn &amp; PyTorch docs</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto;
+         padding: 0 1rem; color: #1a1a1a; background: #fafafa; }
+  h1 { font-size: 1.6rem; }
+  .sub { color: #555; margin-bottom: 1.5rem; }
+  #chat { border: 1px solid #ddd; border-radius: 8px; background: #fff;
+          padding: 1rem; min-height: 200px; }
+  .q { font-weight: 600; margin-top: 1rem; }
+  .meta { color: #666; font-size: 0.85rem; }
+  .cite { border-left: 3px solid #2a7ae2; padding-left: 0.75rem; margin: 0.75rem 0; }
+  .cite a { color: #2a7ae2; text-decoration: none; }
+  .cite p { white-space: pre-wrap; margin: 0.25rem 0; }
+  form { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  input[type=text] { flex: 1; padding: 0.6rem; font-size: 1rem; }
+  button { padding: 0.6rem 1rem; font-size: 1rem; cursor: pointer; }
+  details { margin-top: 0.5rem; font-size: 0.85rem; color: #444; }
+  code { background: #f0f0f0; padding: 0 0.2rem; }
+</style>
+</head>
+<body>
+<h1>RAG ML Docs</h1>
+<p class="sub">Ask questions grounded in the official scikit-learn and PyTorch
+documentation. Answers are extractive passages with doc + section citations —
+nothing is invented. Pipeline: query decomposition → hybrid BM25 + dense
+retrieval → cross-encoder reranking → cited answer.</p>
+<div id="chat"></div>
+<form id="ask-form">
+  <input type="text" id="q" placeholder="e.g. How do I build a Pipeline with a scaler and a classifier?" autocomplete="off">
+  <button type="submit">Ask</button>
+  <button type="button" id="reset">Reset chat</button>
+</form>
+<label><input type="checkbox" id="gen"> Try generative mode (flan-t5-small, quality-gated)</label>
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('ask-form');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('q');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  chat.insertAdjacentHTML('beforeend', `<div class="q">You: ${escapeHtml(question)}</div><div class="meta">Searching…</div>`);
+  const res = await fetch('/ask', { method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ question, generative: document.getElementById('gen').checked }) });
+  const data = await res.json();
+  document.querySelectorAll('.meta').forEach(el => { if (el.textContent === 'Searching…') el.remove(); });
+  let html = `<div class="meta">Mode: ${escapeHtml(data.mode)}`;
+  if (data.sub_questions && data.sub_questions.length > 1)
+    html += ` · Decomposed: ${data.sub_questions.map(escapeHtml).join(' | ')}`;
+  if (data.used_history) html += ' · (used chat history)';
+  html += ` · Citations verified: ${data.citations_verified}</div>`;
+  if (data.generative_text) html += `<p>${escapeHtml(data.generative_text)}</p>`;
+  if (!data.citations.length) html += '<p>No relevant passages found.</p>';
+  for (const c of data.citations) {
+    html += `<div class="cite"><a href="${c.url}" target="_blank">[${c.rank}] ${escapeHtml(c.title)} — ${escapeHtml(c.section)}</a> <span class="meta">(${escapeHtml(c.source)}, rerank ${c.rerank_score})</span><p>${escapeHtml(c.text)}</p></div>`;
+  }
+  if (data.debug) html += `<details><summary>Retrieval debug</summary><pre>${escapeHtml(JSON.stringify(data.debug, null, 1))}</pre></details>`;
+  chat.insertAdjacentHTML('beforeend', html);
+  chat.scrollTop = chat.scrollHeight;
+});
+document.getElementById('reset').addEventListener('click', async () => {
+  await fetch('/reset', { method: 'POST' });
+  chat.innerHTML = '';
+});
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+</body>
+</html>
